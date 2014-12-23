@@ -7,10 +7,10 @@ The bus supports the following messages methods:
 
 Message | Description | Message type | Handler type | Return value
 --- | --------------- | ----- | ----- | -----
-Send&lt;TMsg>  | Send a command message | ICommand | IHandle&lt;TMsg> | void
-Create&lt;TMsg,TResult> |  Send a command message and retrieve the created object | ICommand | ICreate&lt;TMsg,TResult> | TResult
-Publish&lt;TMsg> | Send an event message to all subscribers of the event (publish-subscribe) | IEvent | IHandle&lt;TMsg> | void
-Request&lt;TObject> | Request an object | IRequest | IHandleRequest&lt;TMsg,TObject>| TObject
+Send &lt;TMsg>  | Send a command message | ICommand | IHandle&lt;TMsg> | void
+Create &lt;TMsg,TResult> |  Send a command message and retrieve the created object | ICommand | ICreate&lt;TMsg,TResult> | TResult
+Publish &lt;TMsg> | Send an event message to all subscribers of the event (publish-subscribe) | IEvent | IHandle&lt;TMsg> | void
+Request &lt;TObject> | Request an object | IRequest | IHandleRequest&lt;TMsg,TObject>| TObject
 
 Messages can be sent using the MessageBusAccessor. Example: 
 
