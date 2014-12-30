@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace Structura.Shared.MessageBus
 {
-    internal class SynchronousInMemoryMessageBus : IMessageBus
+    public class SynchronousInMemoryMessageBus : IMessageBus
     {
         private static IList<MessageHandlerInstances> _cachedHandlerTypes;
         private static IMessageHandlerResolver _container;
