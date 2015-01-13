@@ -1,7 +1,7 @@
 messagebus
 ==========
 
-This message bus implementation allows for decoupling components and objects by communicating through the bus. 
+The message bus is a component for streamlined communication within a system. It allows for decoupling components and objects by communicating through an message channel. With the message bus clients and server are unaware of each other and can be developed in isolation. The messages define the contract between server and client.
 
 The bus supports the following messages methods:
 
