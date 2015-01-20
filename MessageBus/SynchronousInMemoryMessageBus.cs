@@ -32,7 +32,9 @@ namespace Structura.Shared.MessageBus
                 foreach (var t in a.GetTypes())
                 {
                     foreach (var i in t.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == type))
-                    { RegisterHandler(i.GenericTypeArguments[0], t); }
+                    {
+                        RegisterHandler(i.GenericTypeArguments[0], t);
+                    }
                 }
             }
         }
@@ -71,14 +73,14 @@ namespace Structura.Shared.MessageBus
         public void Publish<TMsg>(TMsg args) where TMsg : IEvent
         {
             var handlers = GetHandlers<TMsg>();
-            Check.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
+            MessageBusCheck.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
             foreach (var handler in handlers)
                 Invoke("Handle", handler, args);
         }
         public void Send<TMsg>(TMsg args) where TMsg : ICommand
         {
             var handlers = GetHandlers<TMsg>();
-            Check.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
+            MessageBusCheck.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
             foreach (var handler in handlers)
                 Invoke("Handle", handler, args);
         }
@@ -86,12 +88,12 @@ namespace Structura.Shared.MessageBus
         public TResult Create<TMsg, TResult>(TMsg args) where TMsg : ICommand
         {
             var handlers = GetHandlers<TMsg>();
-            Check.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
+            MessageBusCheck.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
             object result = null;
             foreach (var handler in handlers)
             {
                 object newResult = Invoke("Handle", handler, args);
-                Check.Require(newResult == null || result == null, "Only one handler for a Create message can return a value, found multiple return objects for message {0}.", args.GetType().Name);
+                MessageBusCheck.Require(newResult == null || result == null, "Only one handler for a Create message can return a value, found multiple return objects for message {0}.", args.GetType().Name);
                 if (newResult != null) result = newResult;
             }
             return (TResult)result;
@@ -100,8 +102,8 @@ namespace Structura.Shared.MessageBus
         public TResult Request<TMsg, TResult>(TMsg args) where TMsg : IRequest
         {
             var handlers = GetHandlers<TMsg>();
-            Check.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
-            Check.Require(handlers.Count() == 1, "Expected exactly one handler for request " + args.GetType().Name + ". Found " + handlers.Count() + " handlers.");
+            MessageBusCheck.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
+            MessageBusCheck.Require(handlers.Count() == 1, "Expected exactly one handler for request " + args.GetType().Name + ". Found " + handlers.Count() + " handlers.");
             return (TResult)Invoke("Get", handlers.First(), args);
         }
 

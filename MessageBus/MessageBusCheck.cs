@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Structura.Shared.MessageBus
 {   
-    internal static class Check
+    internal static class MessageBusCheck
     {
         /// <summary>
         /// Precondition check - should run regardless of preprocessor directives.
@@ -50,24 +50,7 @@ namespace Structura.Shared.MessageBus
             }
             return string.Format("{0}.{1}.", declaringType, method);
         }
-
-        /// <summary>
-        /// Set this if you wish to use Trace Assert statements 
-        /// instead of exception handling. 
-        /// (The Check class uses exception handling by default.)
-        /// </summary>
-        public static bool UseAssertions
-        {
-            get
-            {
-                return _useAssertions;
-            }
-            set
-            {
-                _useAssertions = value;
-            }
-        }
-
+        
         private static string FormattedString(string messageFormatString, params object[] formatStringParameters)
         {
             return string.Format(CultureInfo.InvariantCulture, "{0}. At method {1}",
