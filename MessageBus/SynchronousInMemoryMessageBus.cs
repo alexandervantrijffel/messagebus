@@ -5,23 +5,21 @@ using System.Reflection;
 
 namespace Structura.Shared.MessageBus
 {
-    public class SynchronousInMemoryMessageBus : IMessageBus
+    internal class SynchronousInMemoryMessageBus : IMessageBus
     {
+        private static IMessageHandlerResolver _resolver;
         private static IList<MessageHandlerInstances> _cachedHandlerTypes;
-        private static IMessageHandlerResolver _container;
         private static IList<Type> _handlerOrder;
 
-        public SynchronousInMemoryMessageBus()
+        public SynchronousInMemoryMessageBus(IMessageHandlerResolver resolver, IEnumerable<Assembly> commandAndEventHandlersAssemblies, IEnumerable<Assembly> requestHandlersAssemblies)
         {
+            _resolver = resolver;
             _cachedHandlerTypes = new List<MessageHandlerInstances>();
-        }
-        public void RegisterHandlers(IMessageHandlerResolver container, IList<Assembly> commandAndEventHandlersAssemblies, IEnumerable<Assembly> requestHandlersAssemblies)
-        {
-            _container = container;
             _cachedHandlerTypes.Clear();
 
-            RegisterHandlersWithReturnType(commandAndEventHandlersAssemblies, typeof(IHandle<>));
-            RegisterHandlersWithReturnType(commandAndEventHandlersAssemblies, typeof(ICreate<,>));
+            var handlersAssemblies = commandAndEventHandlersAssemblies as Assembly[] ?? commandAndEventHandlersAssemblies.ToArray();
+            RegisterHandlersWithReturnType(handlersAssemblies, typeof(IHandle<>));
+            RegisterHandlersWithReturnType(handlersAssemblies, typeof(ICreate<,>));
             RegisterHandlersWithReturnType(requestHandlersAssemblies, typeof(IHandleRequest<,>));
         }
 
@@ -32,12 +30,11 @@ namespace Structura.Shared.MessageBus
                 foreach (var t in a.GetTypes())
                 {
                     foreach (var i in t.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == type))
-                    {
-                        RegisterHandler(i.GenericTypeArguments[0], t);
-                    }
+                    { RegisterHandler(i.GenericTypeArguments[0], t); }
                 }
             }
         }
+
         private static void RegisterHandler(Type msgType, Type handlerType)
         {
             var cacheItem = _cachedHandlerTypes.SingleOrDefault(c => c.MessageType == msgType);
@@ -73,10 +70,11 @@ namespace Structura.Shared.MessageBus
         public void Publish<TMsg>(TMsg args) where TMsg : IEvent
         {
             var handlers = GetHandlers<TMsg>();
-            MessageBusCheck.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
-            foreach (var handler in handlers)
-                Invoke("Handle", handler, args);
+            if (handlers != null && handlers.Any())
+                foreach (var handler in handlers)
+                    Invoke("Handle", handler, args);
         }
+
         public void Send<TMsg>(TMsg args) where TMsg : ICommand
         {
             var handlers = GetHandlers<TMsg>();
@@ -128,21 +126,12 @@ namespace Structura.Shared.MessageBus
                 {
                     foreach (var item in handlerType.HandlerTypes)
                     {
-                        list.Add(_container.Resolve(item));
+                        list.Add(_resolver.Resolve(item));
                     }
 
                 }
             }
             return list;
         }
-    }
-    internal class MessageHandlerInstances
-    {
-        public MessageHandlerInstances()
-        {
-            HandlerTypes = new List<Type>();
-        }
-        public Type MessageType { get; set; }
-        public IList<Type> HandlerTypes { get; set; }
     }
 }

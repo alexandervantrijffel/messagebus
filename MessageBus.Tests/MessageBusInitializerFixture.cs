@@ -13,7 +13,8 @@ namespace MessageBus.Tests
         {
             MessageHandlerResolverMock = Substitute.For<IMessageHandlerResolver>();
             var messageHandlingAssemblyList = new[] {typeof (TestCommand).Assembly};
-            MessageBusAccessor.Instance().RegisterHandlers(MessageHandlerResolverMock,messageHandlingAssemblyList,messageHandlingAssemblyList);
+
+            MessageBusAccessor.Initialize(MessageHandlerResolverMock,messageHandlingAssemblyList,messageHandlingAssemblyList);
             MessageHandlerResolverMock.Resolve(Arg.Any<Type>()).Returns(c => Activator.CreateInstance((Type) c.Args()[0]));
         }
 

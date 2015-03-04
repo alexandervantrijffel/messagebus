@@ -40,6 +40,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MessageBusCheck.cs" />
+    <Compile Include="MessageHandlerInstance.cs" />
     <Compile Include="MessageHandlerInterfaces.cs" />
     <Compile Include="MessageInterfaces.cs" />
     <Compile Include="IMessageHandlerResolver.cs" />
