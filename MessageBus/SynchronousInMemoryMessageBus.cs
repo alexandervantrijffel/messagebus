@@ -88,7 +88,7 @@ namespace Structura.Shared.MessageBus
         public TResult Create<TMsg, TResult>(TMsg args) where TMsg : ICommand
         {
             var handlers = GetHandlers<TMsg>();
-            MessageBusCheck.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
+            MessageBusCheck.Require(handlers != null && handlers.Any(), "No handlers found for message type " + typeof(TMsg).Name);
             object result = null;
             foreach (var handler in handlers)
             {
