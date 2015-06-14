@@ -23,7 +23,7 @@ namespace MessageBus.Tests
             // Arrange
             var command = new TestCommand();
             // Act
-            MessageBusAccessor.Instance().Send(command);
+            MessageBusAccessor.Instance.Send(command);
 
             // Assert
             VerifyMessageProcessing(typeof(TestCommandHandler), command.GetType());
@@ -33,7 +33,7 @@ namespace MessageBus.Tests
         public void TestCommandWithoutHandlers_should_raise_exception()
         {
             // Arrange
-            Action a = () => MessageBusAccessor.Instance().Send(new TestCommandWithoutHandlers());
+            Action a = () => MessageBusAccessor.Instance.Send(new TestCommandWithoutHandlers());
 
             // Act
             // Assert
@@ -49,7 +49,7 @@ namespace MessageBus.Tests
             // Arrange
             var request = new TestRequest();
             // Act
-            var result = MessageBusAccessor.Instance().Request<TestRequest,int>(request);
+            var result = MessageBusAccessor.Instance.Request<TestRequest,int>(request);
 
             // Assert
             VerifyMessageProcessing(typeof(TestRequestHandler), request.GetType());
@@ -62,7 +62,7 @@ namespace MessageBus.Tests
             // Arrange
             var create = new TestCreate();
             // Act
-            var result = MessageBusAccessor.Instance().Create<TestCreate,int>(create);
+            var result = MessageBusAccessor.Instance.Create<TestCreate,int>(create);
 
             // Assert
             VerifyMessageProcessing(typeof(TestCreateHandler), create.GetType());
@@ -75,7 +75,7 @@ namespace MessageBus.Tests
             // Arrange
             var create = new TestPublish();
             // Act
-            MessageBusAccessor.Instance().Publish(create);
+            MessageBusAccessor.Instance.Publish(create);
 
             // Assert
             VerifyMessageProcessing(typeof(TestPublishHandler), create.GetType());

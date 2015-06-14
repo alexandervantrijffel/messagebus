@@ -1,25 +1,33 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 
 namespace Structura.Shared.MessageBus
 {
     public static class MessageBusAccessor
     {
-        private static readonly IMessageBus instance = new SynchronousInMemoryMessageBus();
-        public static Func<IMessageBus> Instance;
+        private static Func<IMessageBus> _instanceResolver;
+
+
+        public static IMessageBus Instance { get { return _instanceResolver(); }}
         
-        // Explicit static constructor to tell C# compiler
-        // not to mark type as beforefieldinit
+        [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1409:RemoveUnnecessaryCode", 
+            Justification = "Explicit static constructor to tell C# compiler not to mark type as beforefieldinit")]
         static MessageBusAccessor()
         {
-            RevertToOriginalInstance();
+        }
+        /// <summary>
+        /// Override the default message bus instance
+        /// </summary>
+        public static void SetMessageBusResolver(Func<IMessageBus> messageBusResolver)
+        {
+            _instanceResolver = messageBusResolver;
         }
 
-        /// <summary>
-        /// For unit testing blegh
-        /// </summary>
-        public static void RevertToOriginalInstance()
+        public static void Initialize(IMessageHandlerResolver resolver, IEnumerable<Assembly> commandAndEventHandlersAssemblies, IEnumerable<Assembly> requestHandlersAssemblies)
         {
-            Instance = () => instance;
+            _instanceResolver =  () => new SynchronousInMemoryMessageBus(resolver,commandAndEventHandlersAssemblies,requestHandlersAssemblies);
         }
     }
 }
