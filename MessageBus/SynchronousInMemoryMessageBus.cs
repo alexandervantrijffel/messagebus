@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
@@ -23,7 +24,7 @@ namespace Structura.Shared.MessageBus
             RegisterHandlersWithReturnType(requestHandlersAssemblies, typeof(IHandleRequest<,>));
         }
 
-        private static void RegisterHandlersWithReturnType(IEnumerable<Assembly> commandHandlersAssemblies, Type type)
+		private static void RegisterHandlersWithReturnType(IEnumerable<Assembly> commandHandlersAssemblies, Type type)
         {
             foreach (var a in commandHandlersAssemblies)
             {
@@ -35,7 +36,7 @@ namespace Structura.Shared.MessageBus
             }
         }
 
-        private static void RegisterHandler(Type msgType, Type handlerType)
+		private static void RegisterHandler(Type msgType, Type handlerType)
         {
             var cacheItem = _cachedHandlerTypes.SingleOrDefault(c => c.MessageType == msgType);
             if (cacheItem == null)
@@ -67,7 +68,9 @@ namespace Structura.Shared.MessageBus
                 }
             }
         }
-        public void Publish<TMsg>(TMsg args) where TMsg : IEvent
+
+		[DebuggerStepThrough]
+		public void Publish<TMsg>(TMsg args) where TMsg : IEvent
         {
             var handlers = GetHandlers<TMsg>();
             if (handlers != null && handlers.Any())
@@ -75,7 +78,8 @@ namespace Structura.Shared.MessageBus
                     Invoke("Handle", handler, args);
         }
 
-        public void Send<TMsg>(TMsg args) where TMsg : ICommand
+		[DebuggerStepThrough]
+		public void Send<TMsg>(TMsg args) where TMsg : ICommand
         {
             var handlers = GetHandlers<TMsg>();
             MessageBusCheck.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
@@ -83,7 +87,8 @@ namespace Structura.Shared.MessageBus
                 Invoke("Handle", handler, args);
         }
 
-        public TResult Create<TMsg, TResult>(TMsg args) where TMsg : ICommand
+		[DebuggerStepThrough]
+		public TResult Create<TMsg, TResult>(TMsg args) where TMsg : ICommand
         {
             var handlers = GetHandlers<TMsg>();
             MessageBusCheck.Require(handlers != null && handlers.Any(), "No handlers found for message type " + typeof(TMsg).Name);
@@ -97,7 +102,8 @@ namespace Structura.Shared.MessageBus
             return (TResult)result;
         }
 
-        public TResult Request<TMsg, TResult>(TMsg args) where TMsg : IRequest
+		[DebuggerStepThrough]
+		public TResult Request<TMsg, TResult>(TMsg args) where TMsg : IRequest
         {
             var handlers = GetHandlers<TMsg>();
             MessageBusCheck.Require(handlers != null && handlers.Any(), "No handlers found for message type " + args.GetType().Name);
