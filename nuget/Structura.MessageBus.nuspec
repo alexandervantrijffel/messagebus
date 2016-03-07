@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Structura.MessageBus</id>
+    <version>1.0.0</version>
+    <authors>Alexander van Trijffel</authors>
+    <projectUrl>https://github.com/alexandervantrijffel/messagebus</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Lightweight synchronous messagebus for communication within an application.</description>
+    <releaseNotes>Initial release.</releaseNotes>
+	<tags>message bus publish subscribe dispatching routing</tags>
+	<references>
+      <reference file="Structura.Shared.MessageBus.dll" />      
+    </references>
+  </metadata>
+</package>
