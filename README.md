@@ -21,3 +21,5 @@ MessageBusAccessor.Instance().Send(new MyCommand())
 The bus dispatches the message to all message handlers for the given message type and message method. The message is dispatched to each handler sequentially. This is not a durable message bus. All message handling is performed in-memory and synchronously. Each handler can interrupt the message processing by throwing an exception.
 
 While providing convenient access to the bus, the MessageBusAccessor can still be replaced with a mock for unit tests because th Instance method is a delegate.
+
+Maintained by Alexander van Trijffel of [Software Development Consultancy company Structura](http://structura.ws)
